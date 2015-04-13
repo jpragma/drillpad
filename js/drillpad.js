@@ -2,6 +2,10 @@ $(document).ready(function () {
 
     var mypaper = new Raphael(0, 0, $(window).width(), $(window).height());
 
+    var isLandscape = function () {
+        return (window.innerHeight < window.innerWidth);
+    };
+
     var drawTable = function() {
         var table = mypaper.rect(0, 0, mypaper.width, mypaper.height, 10);
         table.attr('fill', '#fff');
@@ -9,8 +13,8 @@ $(document).ready(function () {
     };
 
     var secPerDmd = 3;
-    var verticalLineCnt = 8 * secPerDmd;
-    var horizontalLineCnt = 4 * secPerDmd;
+    var verticalLineCnt = (isLandscape() ? 8 : 4) * secPerDmd;
+    var horizontalLineCnt = (isLandscape() ? 4 : 8) * secPerDmd;
     var drawGrid = function () {
         // Vertical
         for (var i = 1; i < verticalLineCnt; i++) {
@@ -40,11 +44,21 @@ $(document).ready(function () {
         var hRnd = randomIntFromInterval(0, horizontalLineCnt);
         var rndLineSet = mypaper.set();
         rndLineSet.push(
-            drawLine('M' + mypaper.width / verticalLineCnt * vRnd + ',0 V' + mypaper.height, true),
-            drawLine('M0,' + mypaper.height/ horizontalLineCnt * hRnd + ' H' + mypaper.width, true)
+            drawLine('M' + adjustAtEdge(mypaper.width / verticalLineCnt * vRnd, mypaper.width) + ',0 V' + mypaper.height, true),
+            drawLine('M0,' + adjustAtEdge(mypaper.height/ horizontalLineCnt * hRnd, mypaper.height) + ' H' + mypaper.width, true)
         );
         rndLineSet.attr('stroke', 'red').attr('stroke-width', 3);
         return rndLineSet;
+    };
+
+    var adjustAtEdge = function (val, max) {
+        var pxl = 4;
+        if (val == 0)
+            return pxl;
+        else if (val == max)
+            return val - pxl;
+        else
+            return val;
     };
 
     var curLine = null;
