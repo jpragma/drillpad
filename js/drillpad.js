@@ -2,6 +2,14 @@ $(document).ready(function () {
 
     var mypaper = new Raphael(0, 0, $(window).width(), $(window).height());
 
+    var getNumOfLines = function() {
+        var hash = window.location.hash.replace('#', '');
+        if (hash) {
+            return Math.min(parseInt(hash), 6);
+        }
+        return 1;
+    };
+
     var isLandscape = function () {
         return (window.innerHeight < window.innerWidth);
     };
@@ -39,7 +47,7 @@ $(document).ready(function () {
         return Math.floor(Math.random()*(max-min+1)+min);
     };
 
-    var randomLine = function () {
+    var randomLine = function (color) {
         var vRnd = randomIntFromInterval(0, verticalLineCnt);
         var hRnd = randomIntFromInterval(0, horizontalLineCnt);
         var rndLineSet = mypaper.set();
@@ -47,7 +55,7 @@ $(document).ready(function () {
             drawLine('M' + adjustAtEdge(mypaper.width / verticalLineCnt * vRnd, mypaper.width) + ',0 V' + mypaper.height, true),
             drawLine('M0,' + adjustAtEdge(mypaper.height/ horizontalLineCnt * hRnd, mypaper.height) + ' H' + mypaper.width, true)
         );
-        rndLineSet.attr('stroke', 'red').attr('stroke-width', 3);
+        rndLineSet.attr('stroke', color).attr('stroke-width', 3);
         return rndLineSet;
     };
 
@@ -61,12 +69,18 @@ $(document).ready(function () {
             return val;
     };
 
-    var curLine = null;
+
+    var colors = ['red', 'blue', 'green', 'purple', '#FFD700', '#FF00FF'];
+    var curLines = [];
     var table = drawTable();
     drawGrid();
     table.click(function () {
-        if (curLine)
-            curLine.remove();
-        curLine = randomLine();
+        $.each(curLines, function (index, line) {
+            line.remove();
+        });
+        curLines = [];
+        for (var i=0; i<getNumOfLines(); i++) {
+            curLines.push(randomLine(colors[i]));
+        }
     });
 });
