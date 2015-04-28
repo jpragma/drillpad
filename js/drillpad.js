@@ -7,7 +7,7 @@ $(document).ready(function () {
         if (hash) {
             return Math.min(parseInt(hash), 6);
         }
-        return 1;
+        return -1;
     };
 
     var isLandscape = function () {
@@ -17,10 +17,18 @@ $(document).ready(function () {
     var drawTable = function() {
         var table = mypaper.rect(0, 0, mypaper.width, mypaper.height, 10);
         table.attr('fill', '#fff');
+
+        mypaper.circle(0, 0, 20).attr('fill', '#000');
+        mypaper.circle(mypaper.width/2, 0, 15).attr('fill', '#000');
+        mypaper.circle(mypaper.width, 0, 20).attr('fill', '#000');
+        mypaper.circle(0, mypaper.height, 20).attr('fill', '#000');
+        mypaper.circle(mypaper.width, mypaper.height, 20).attr('fill', '#000');
+        mypaper.circle(mypaper.width/2, mypaper.height, 15).attr('fill', '#000');
+
         return table;
     };
 
-    var secPerDmd = 3;
+    var secPerDmd = 4;
     var verticalLineCnt = (isLandscape() ? 8 : 4) * secPerDmd;
     var horizontalLineCnt = (isLandscape() ? 4 : 8) * secPerDmd;
     var drawGrid = function () {
@@ -59,6 +67,19 @@ $(document).ready(function () {
         return rndLineSet;
     };
 
+    var randomTarget = function () {
+        var vRnd = randomIntFromInterval(0, verticalLineCnt);
+        var hRnd = randomIntFromInterval(0, horizontalLineCnt);
+        var radius = mypaper.width / verticalLineCnt;
+        var targetSet = mypaper.set();
+        targetSet.push (
+            mypaper.circle(mypaper.width / verticalLineCnt * vRnd, mypaper.height / horizontalLineCnt * hRnd, radius*2).attr('stroke', '#0f0').attr('stroke-width', 2),
+            mypaper.circle(mypaper.width / verticalLineCnt * vRnd, mypaper.height / horizontalLineCnt * hRnd, radius).attr('stroke', '#f00').attr('stroke-width', 2),
+            mypaper.circle(mypaper.width / verticalLineCnt * vRnd, mypaper.height / horizontalLineCnt * hRnd, radius/2).attr('stroke', '#000').attr('stroke-width', 2)
+        );
+        return targetSet;
+    };
+
     var adjustAtEdge = function (val, max) {
         var pxl = 4;
         if (val == 0)
@@ -79,8 +100,12 @@ $(document).ready(function () {
             line.remove();
         });
         curLines = [];
-        for (var i=0; i<getNumOfLines(); i++) {
+        var numOfLines = getNumOfLines();
+        for (var i=0; i<Math.abs(numOfLines); i++) {
             curLines.push(randomLine(colors[i]));
+        }
+        if (numOfLines == -1) {
+            curLines.push(randomTarget());
         }
     });
 });
