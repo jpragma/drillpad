@@ -19,11 +19,19 @@ $(document).ready(function () {
         table.attr('fill', '#fff');
 
         mypaper.circle(0, 0, 20).attr('fill', '#000');
-        mypaper.circle(mypaper.width/2, 0, 15).attr('fill', '#000');
+        if (isLandscape()) {
+            mypaper.circle(mypaper.width/2, 0, 15).attr('fill', '#000');
+        } else {
+            mypaper.circle(0, mypaper.height/2, 15).attr('fill', '#000');
+        }
         mypaper.circle(mypaper.width, 0, 20).attr('fill', '#000');
         mypaper.circle(0, mypaper.height, 20).attr('fill', '#000');
         mypaper.circle(mypaper.width, mypaper.height, 20).attr('fill', '#000');
-        mypaper.circle(mypaper.width/2, mypaper.height, 15).attr('fill', '#000');
+        if (isLandscape()) {
+            mypaper.circle(mypaper.width/2, mypaper.height, 15).attr('fill', '#000');
+        } else {
+            mypaper.circle(mypaper.width, mypaper.height/2, 15).attr('fill', '#000');
+        }
 
         return table;
     };
